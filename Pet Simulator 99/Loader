@@ -1,10 +1,10 @@
 local ID = game.PlaceId
 if ID == 8737899170 then
-    print("World 1 Detected")
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/IdiotHub/Scripts/main/Pet%20Simulator%2099/Hub"))()
+    print("World 1")
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/IdiotHub/Scripts/main/Pet%20Simulator%2099/Main%20World"))()
 elseif ID == 16498369169 then
-    print("World 2 Detected")
-    loadstring(game:HttpGet("wait until moonsec bot up smh"))()
+    print("World 2")
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/IdiotHub/Scripts/main/Pet%20Simulator%2099/Tech%20World"))()
 else
     print("Unknown PlaceId:", ID)
 end
