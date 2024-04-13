@@ -14,7 +14,7 @@ $$   ____|$$ |  $$ |$$ |$$ |            $$ |  $$ |$$  __$$ |$$ | $$ | $$ |$$   _
 
 --// REQUIRES \\--
 --local Dump = require(script.Parent.assets:WaitForChild("dump"))
-local Dump = loadstring(game:HttpGet("https://raw.githubusercontent.com/IdiotHub/Scripts/main/Gui%20Saver/assets/dump"))
+local Dump = loadstring(game:HttpGet("https://raw.githubusercontent.com/IdiotHub/Scripts/main/Gui%20Saver/assets/dump"))()
 Dump = game.HttpService:JSONDecode(Dump)
 
 --// GLOBALS \\--
