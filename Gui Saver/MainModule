@@ -12,8 +12,8 @@
 
 --// REQUIRES \\--
 
-local RbxApi = loadstring(game:HttpGet("https://raw.githubusercontent.com/IdiotHub/Scripts/main/Gui%20Saver/rbxapi"))
-local Utils = loadstring(game:HttpGet("https://raw.githubusercontent.com/IdiotHub/Scripts/main/Gui%20Saver/utils"))
+local RbxApi = loadstring(game:HttpGet("https://raw.githubusercontent.com/IdiotHub/Scripts/main/Gui%20Saver/rbxapi"))()
+local Utils = loadstring(game:HttpGet("https://raw.githubusercontent.com/IdiotHub/Scripts/main/Gui%20Saver/utils"))()
 local RequireProxy = require;
 --local Logo = script.Parent.assets.logo.Value;
 
