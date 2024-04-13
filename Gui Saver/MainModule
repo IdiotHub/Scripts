@@ -253,16 +253,16 @@ local function WriteInstances(Res:ConvertionRes)
 		end
 		-- solve parent
 		local Parent = '';
-		if Inst.Parent == nil then -- gui case
-			-- TODO: let user choice wich parent use for the ScreenGui from Settings
-			Parent = 'game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")';
-		else
-			Parent = ('%s["%s"]'):format(
-			Res.Settings.RegName, Inst.Parent.Id
-			); -- we have to get the id to reference the right parent
-		end
+		--if Inst.Parent == nil then -- gui case
+		--	-- TODO: let user choice wich parent use for the ScreenGui from Settings
+		--	Parent = 'game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")';
+		--else
+		--	Parent = ('%s["%s"]'):format(
+		--	Res.Settings.RegName, Inst.Parent.Id
+		--	); -- we have to get the id to reference the right parent
+		--end
 		-- write instance
-		Res.Source =  Res.Source .. Comment.. F_NEWINST:format(
+		codeBro =  codeBro .. Comment.. F_NEWINST:format(
 			Res.Settings.RegName,
 			Inst.Id,
 			Inst.Instance.ClassName,
@@ -276,13 +276,13 @@ end;
 --	-- write require proxy before loading all modules
 --	if #Res._MOD > 0 then
 --		if Res.Settings.Comments then
---			Res.Source = Res.Source .. ('-- Require G2L wrapper\n'):format(#Res._MOD);
+--			codeBro = codeBro .. ('-- Require G2L wrapper\n'):format(#Res._MOD);
 --		end;
---		Res.Source = Res.Source .. RequireProxy.Source .. '\n\n';
+--		codeBro = codeBro .. RequireProxy.Source .. '\n\n';
 --	end;
 --	-- register all modules state in the G2L_MODULES
 --	for _, Module in next, Res._MOD do
---		Res.Source = Res.Source .. F_NEWMOD:format(
+--		codeBro = codeBro .. F_NEWMOD:format(
 --			Res.Settings.RegName, Module.Id,
 --			Res.Settings.RegName, Module.Id,
 --			Module.Instance.Source
@@ -304,7 +304,7 @@ end;
 --		Res.Settings.RegName, Script.Id
 --		) .. Script.Instance.Source:gsub('\n', '\n\t');
 --		-- write
---		Res.Source = Res.Source .. Comment .. F_NEWLUA:format(
+--		codeBro = codeBro .. Comment .. F_NEWLUA:format(
 --			ClosureName, Source,
 --			ClosureName
 --		);
@@ -322,23 +322,23 @@ local function Convert(Gui:ScreenGui, Settings:Settings?) : ConvertionRes
 		_LUA = {},
 		_MOD = {}
 	};
-	Res.Source = ('local %s = {};\n\n'):format(Settings.RegName);
+	codeBro = ('local %s = {};\n\n'):format(Settings.RegName);
 	LoadDescendants(Res, Gui, nil);
 	WriteInstances(Res);
 	--WriteScripts(Res);
-	Res.Source = Res.Source .. ('\nreturn %s["%s"], require;'):format(Settings.RegName, Res._INST[1].Id);
+	codeBro = codeBro .. ('\nreturn %s["%s"], require;'):format(Settings.RegName, Res._INST[1].Id);
 	-- apply comments
 	if Settings.Comments then
 		local Info = ('-- Instances: %d | Scripts: %d | Modules: %d\n'):format(
 		#Res._INST, #Res._LUA, #Res._MOD
 		);
-		Res.Source = Info .. Res.Source;
+		codeBro = Info .. codeBro;
 	end
 	-- apply logo
 	--if Settings.Logo then
-	--	Res.Source = Logo .. '\n\n' .. Res.Source
+	--	codeBro = Logo .. '\n\n' .. codeBro
 	--end
-	return Res;
+	return codeBro;
 end;
 
 return {
