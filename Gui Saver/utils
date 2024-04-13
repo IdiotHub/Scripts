@@ -1,7 +1,7 @@
 --// REQUIRE \\--
 local G2L;
 if false then -- fake block, just load the G2L.ConvertionRes for typechecking
-	G2L = loadstring(game:HttpGet("https://raw.githubusercontent.com/IdiotHub/Scripts/main/Gui%20Saver/core"))
+	G2L = loadstring(game:HttpGet("https://raw.githubusercontent.com/IdiotHub/Scripts/main/Gui%20Saver/core"))()
 end
 
 local Utils;
