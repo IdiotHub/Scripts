@@ -18,7 +18,7 @@ end;
 
 local Serializer = loadstring(game:HttpGet("https://raw.githubusercontent.com/NotDSF/leopard/main/rbx/leopard-syn.lua"))();
 local clonef = clonefunction;
---local pconsole = clonef(rconsoleprint);
+local pconsole = clonef(rconsoleprint);
 local format = clonef(string.format);
 local gsub = clonef(string.gsub);
 local match = clonef(string.match);
@@ -55,7 +55,7 @@ local function printf(...)
     if options.SaveLogs then
         append(logname, gsub(format(...), "%\27%[%d+m", ""));
     end;
-    return pconsole(format(...));
+    return print(...)--pconsole(format(...));
 end;
 
 local function ConstantScan(constant)
@@ -184,10 +184,10 @@ for method, enabled in Pairs(methods) do
 end;
 
 if not debug.info(2, "f") then
-    pconsole("You are running an outdated version, please use the loadstring at https://github.com/NotDSF/HttpSpy\n");
+    print("You are running an outdated version, please use the loadstring at https://github.com/NotDSF/HttpSpy\n");
 end;
 
-pconsole(format("HttpSpy %s (Creator: https://github.com/NotDSF)\nChange Logs:\n\t%s\nLogs are automatically being saved to: \27[32m%s\27[0m\n\n", version, RecentCommit, options.SaveLogs and logname or "(You aren't saving logs, enable SaveLogs if you want to save logs)"));
+print(format("HttpSpy %s (Creator: https://github.com/NotDSF)\nChange Logs:\n\t%s\nLogs are automatically being saved to: \27[32m%s\27[0m\n\n", version, RecentCommit, options.SaveLogs and logname or "(You aren't saving logs, enable SaveLogs if you want to save logs)"));
 
 if not options.API then return end;
 
