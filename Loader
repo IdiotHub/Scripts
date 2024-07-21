@@ -1,9 +1,7 @@
-if game.PlaceId == 8737899170 then
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/IdiotHub/Scripts/main/Pet%20Simulator%2099/Main%20World"))()
-elseif game.PlaceId == 16498369169 then
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/IdiotHub/Scripts/main/Pet%20Simulator%2099/Tech%20World"))()
-elseif game.PlaceId == 16510724413 then
-    loadstring(game:HttpGet("https://github.com/IdiotHub/Scripts/blob/main/Pet%20Catcher/Pet%20Catchers%20Main"))()
-elseif game.PlaceId == 17601705136 then 
+if game.PlaceId == 16510724413 then
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/IdiotHub/Scripts/main/Pet%20Catcher/Pet%20Catchers%20Main"))()
+elseif game.PlaceId == 17601705136 then
     loadstring(game:HttpGet("https://raw.githubusercontent.com/IdiotHub/Scripts/main/Random/TycoonRng"))()
+elseif game.PlaceId == 17181264920 then
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/IdiotHub/Scripts/main/Random/CardRng"))()
 end
