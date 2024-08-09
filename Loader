@@ -4,4 +4,6 @@ elseif game.PlaceId == 17601705136 then
     loadstring(game:HttpGet("https://raw.githubusercontent.com/IdiotHub/Scripts/main/Random/TycoonRng"))()
 elseif game.PlaceId == 17181264920 then
     loadstring(game:HttpGet("https://raw.githubusercontent.com/IdiotHub/Scripts/main/Random/CardRng"))()
+elseif game.PlaceId == 18138547215 then 
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/IdiotHub/Scripts/main/Random/AnimeCardBattle"))()
 end
