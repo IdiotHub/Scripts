@@ -6,4 +6,7 @@ elseif game.PlaceId == 17181264920 then
     loadstring(game:HttpGet("https://raw.githubusercontent.com/IdiotHub/Scripts/main/Random/CardRng"))()
 elseif game.PlaceId == 18138547215 then 
     loadstring(game:HttpGet("https://raw.githubusercontent.com/IdiotHub/Scripts/main/Random/AnimeCardBattle"))()
+elseif game.PlaceId == 18901165922 then
+    getgenv().UiSize = UDim2.new(0.5,0,0.8,0) 
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/IdiotHub/Scripts/main/Random/Pets%20Go"))()
 end
