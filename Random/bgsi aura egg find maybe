@@ -84,8 +84,7 @@ if egg then
         Body = HttpService:JSONEncode({embeds = embeds})
     })
 else
-    queueteleport("getgenv().webhook = getgenv().webhook")
-    queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/imlivinginmyhouse/BGSI-HUB/refs/heads/main/AutoHop.lua'))()")
+    queueteleport('getgenv().webhook = "' .. getgenv().webhook .. '"; loadstring(game:HttpGet("https://raw.githubusercontent.com/IdiotHub/Scripts/refs/heads/main/Random/bgsi%20aura%20egg%20find%20maybe"))()')
     Teleport()
 end
 loadstring(game:HttpGet("https://raw.githubusercontent.com/IdiotHub/Scripts/refs/heads/main/BGSI/main.lua"))()
