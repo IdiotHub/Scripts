@@ -1,2 +1,2 @@
-hookfunction(print, function() end)
-loadstring(game:HttpGet("https://pandadevelopment.net/virtual/file/d15b33fa2b9bd36e"))()
+
+loadstring(game:HttpGet("https://pandadevelopment.net/virtual/file/7cc644ce57155f2e"))()
