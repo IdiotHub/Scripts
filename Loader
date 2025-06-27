@@ -10,7 +10,6 @@ local games = {
 
 local scriptURL = games[game.PlaceId]
 if scriptURL then
-    getgenv().uiSize = UDim2.fromOffset(580, 400)
     loadstring(game:HttpGet(scriptURL))()
 else 
     print("Game not supported by idiothub")
