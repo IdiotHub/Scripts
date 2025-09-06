@@ -106,6 +106,15 @@ local function AddConnection(Signal, Function)
 	return SignalConnect
 end
 
+local function AddConnection2(obj, Signal, Function)
+	if (not OrionLib:IsRunning()) then
+		return
+	end
+	local SignalConnect = obj[Signal]:Connect(Function)
+	table.insert(OrionLib.Connections, SignalConnect)
+	return obj
+end
+
 task.spawn(function()
 	while (OrionLib:IsRunning()) do
 		wait()
@@ -601,10 +610,17 @@ function OrionLib:MakeWindow(WindowConfig)
 				Size = UDim2.new(0, 32, 0, 32),
 				Position = UDim2.new(0, 10, 0.5, 0)
 			}), {
-				SetProps(MakeElement("Image", "https://www.roblox.com/headshot-thumbnail/image?userId=".. LocalPlayer.UserId .."&width=420&height=420&format=png"), {
+				AddConnection2(SetProps(MakeElement("ImageButton", "https://www.roblox.com/headshot-thumbnail/image?userId=".. LocalPlayer.UserId .."&width=420&height=420&format=png"), {
 					Size = UDim2.new(1, 0, 1, 0),
-					Active = true
-				}),
+					Active = true,
+					AutoButtonColor = false,
+				}), "MouseButton1Click", function()
+					if (tick() - playerClick.LastClick) < 50 then 
+						MainWindow.Position = UDim2.new(0.5, -OrionLib.Size.X.Offset/2, 0.5, -OrionLib.Size.Y.Offset/2)
+					else 
+						playerClick.LastClick = tick()
+					end
+				end),
 				AddThemeObject(SetProps(MakeElement("Image", "rbxassetid://4031889928"), {
 					Size = UDim2.new(1, 0, 1, 0),
 				}), "Second"),
@@ -1000,7 +1016,8 @@ function OrionLib:MakeWindow(WindowConfig)
 				end
 				return LabelFunction
 			end
-			function ElementFunction:AddParagraph(Text, Content)
+
+			function ElementFunction:AddParagraph(Text, Content, ImageAssetId, Buttons)
 				Text = Text or "Text"
 				Content = Content or "Content"
 
@@ -1015,29 +1032,235 @@ function OrionLib:MakeWindow(WindowConfig)
 						Font = Enum.Font.GothamBold,
 						Name = "Title"
 					}), "Text"),
+
+					SetChildren(SetProps(Instance.new("ImageLabel"), {
+						Size = UDim2.new(1, -24, 0, 0),
+						Position = UDim2.new(0, 12, 0, 30),
+						BackgroundTransparency = 1,
+						Image = "",
+						Name = "ParagraphImage",
+						Visible = false
+					}), {
+						SetProps(Instance.new("UICorner"), { CornerRadius = UDim.new(0, 5) }),
+						Instance.new("UIAspectRatioConstraint")
+					}),
+
 					AddThemeObject(SetProps(MakeElement("Label", "", 13), {
 						Size = UDim2.new(1, -24, 0, 0),
-						Position = UDim2.new(0, 12, 0, 26),
+						Position = UDim2.new(0, 12, 0, 30),
 						Font = Enum.Font.GothamSemibold,
 						Name = "Content",
 						TextWrapped = true
 					}), "TextDark"),
+
 					AddThemeObject(MakeElement("Stroke"), "Stroke")
 				}), "Second")
 
-				AddConnection(ParagraphFrame.Content:GetPropertyChangedSignal("Text"), function()
-					ParagraphFrame.Content.Size = UDim2.new(1, -24, 0, ParagraphFrame.Content.TextBounds.Y)
-					ParagraphFrame.Size = UDim2.new(1, 0, 0, ParagraphFrame.Content.TextBounds.Y + 35)
-				end)
+				local TitleLabel = ParagraphFrame:FindFirstChild("Title")
+				local ImageLabel = ParagraphFrame:FindFirstChild("ParagraphImage")
+				local ContentLabel = ParagraphFrame:FindFirstChild("Content")
 
-				ParagraphFrame.Content.Text = Content
+				-- Button container
+				local ButtonContainer = Instance.new("Frame")
+				ButtonContainer.Name = "ButtonContainer"
+				ButtonContainer.BackgroundTransparency = 1
+				ButtonContainer.Size = UDim2.new(1,0,0,0)
+				ButtonContainer.AutomaticSize = Enum.AutomaticSize.Y
+				ButtonContainer.Visible = false
+				ButtonContainer.Parent = ParagraphFrame
 
-				local ParagraphFunction = {}
-				function ParagraphFunction:Set(ToChange)
-					ParagraphFrame.Content.Text = ToChange
+				local ContainerLayout = Instance.new("UIGridLayout")
+				ContainerLayout.CellPadding = UDim2.new(0.02,0,0,5)
+				ContainerLayout.CellSize = UDim2.new(.48,0,0,30)
+				ContainerLayout.Parent = ButtonContainer
+
+				-- Single button row
+				local SingleRow = Instance.new("Frame")
+				SingleRow.Name = "SingleRow"
+				SingleRow.BackgroundTransparency = 1
+				SingleRow.Size = UDim2.new(1, 0, 0, 30)
+				SingleRow.Position = UDim2.new(0, 6, 1, -27)
+				SingleRow.AutomaticSize = Enum.AutomaticSize.Y
+				SingleRow.Visible = false
+				SingleRow.Parent = ParagraphFrame
+
+				local RowLayout = Instance.new("UIGridLayout")
+				RowLayout.CellPadding = UDim2.new(0.02,0,0,5)
+				RowLayout.CellSize = UDim2.new(.98,0,0,30)
+				RowLayout.Parent = SingleRow
+
+				-- Create a button
+				local function createButton(config)
+					local btnConfig = {
+						Name = config.Name or "Button",
+						Callback = config.Callback or function() end,
+						Icon = config.Icon or "rbxassetid://3944703587"
+					}
+
+					local Button = Instance.new("TextButton")
+					Button.BackgroundTransparency = 1
+					Button.Size = UDim2.new(0.5, -3, 0, 30)
+					Button.AutomaticSize = Enum.AutomaticSize.Y
+					Button.Text = ""
+
+					local ButtonFrame = AddThemeObject(SetChildren(SetProps(MakeElement("RoundFrame", Color3.fromRGB(255, 255, 255), 0, 5), {
+						Size = UDim2.new(1, 0, 0, 30),
+						AutomaticSize = Enum.AutomaticSize.Y,
+						Parent = Button
+					}), {
+						AddThemeObject(SetProps(MakeElement("Label", btnConfig.Name, 13), {
+							Size = UDim2.new(1, -40, 0, 0),
+							AutomaticSize = Enum.AutomaticSize.Y,
+							Position = UDim2.new(0, 8, 0, 6),
+							TextXAlignment = Enum.TextXAlignment.Left,
+							TextWrapped = true,
+							Font = Enum.Font.GothamBold,
+							Name = "ButtonLabel"
+						}), "Text"),
+						AddThemeObject(SetProps(MakeElement("Image", btnConfig.Icon), {
+							Size = UDim2.new(0, 20, 0, 20),
+							AnchorPoint = Vector2.new(1, 0.5),
+							Position = UDim2.new(1, -10, 0.5, 0),
+						}), "TextDark"),
+						AddThemeObject(MakeElement("Stroke"), "Stroke")
+					}), "Second")
+
+					Button.MouseButton1Click:Connect(btnConfig.Callback)
+					return Button
 				end
+
+				-- Place buttons correctly in container and single row
+				local function arrangeButtons(buttons)
+					for _, child in ipairs(ButtonContainer:GetChildren()) do 
+						if child:IsA("GuiButton") then 
+							child.Parent = nil 
+						end
+					end
+					for _, child in ipairs(SingleRow:GetChildren()) do 
+						if child:IsA("GuiButton") then 
+							child.Parent = nil 
+						end
+					end
+					ButtonContainer.Visible = false
+					SingleRow.Visible = false
+
+					if #buttons == 0 then return end
+
+					-- Even number: all go to container
+					if #buttons % 2 == 0 then
+						ButtonContainer.Visible = true
+						for _, btn in ipairs(buttons) do
+							btn.Parent = ButtonContainer
+							btn.Size = UDim2.new(0.5, -3, 0, 30)
+						end
+					else
+						-- Odd number: n-1 go to container, last one to row
+						ButtonContainer.Visible = true
+						for i = 1, #buttons - 1 do
+							buttons[i].Parent = ButtonContainer
+							buttons[i].Size = UDim2.new(0.5, -3, 0, 30)
+						end
+						SingleRow.Visible = true
+						buttons[#buttons].Parent = SingleRow
+						buttons[#buttons].Size = UDim2.new(1, 0, 0, 30)
+					end
+				end
+
+				-- Paragraph functions
+				local ParagraphFunction = {}
+				ParagraphFunction._buttons = {}
+
+				function ParagraphFunction:AddButton(buttonConfig)
+					local btn = createButton(buttonConfig)
+					table.insert(self._buttons, btn)
+					-- Move row button to container if exists
+					if SingleRow.Visible then
+						for _, child in ipairs(SingleRow:GetChildren()) do
+							if child:IsA("GuiButton") then
+								child.Parent = ButtonContainer
+								child.Size = UDim2.new(0.5, -3, 0, 30)
+							end		
+						end
+						SingleRow.Visible = false
+					end
+					arrangeButtons(self._buttons)
+				end
+
+				function ParagraphFunction:AddButtons(buttons)
+					for _, config in ipairs(buttons) do
+						self:AddButton(config)
+					end
+				end
+
+				function ParagraphFunction:UpdateButtons(buttons)
+					self._buttons = {}
+					for _, config in ipairs(buttons) do
+						local btn = createButton(config)
+						table.insert(self._buttons, btn)
+					end
+					arrangeButtons(self._buttons)
+				end
+
+				local function recalcSize()
+					local yOffset = 30
+					if ImageLabel.Visible then yOffset = yOffset + ImageLabel.AbsoluteSize.Y + 5 end
+					ContentLabel.Position = UDim2.new(0, 12, 0, yOffset)
+					ContentLabel.Size = UDim2.new(1, -24, 0, ContentLabel.TextBounds.Y)
+					yOffset = yOffset + ContentLabel.AbsoluteSize.Y + 10
+					if ButtonContainer.Visible then
+						ButtonContainer.Position = UDim2.new(0, 6, 0, yOffset)
+						yOffset = yOffset + ButtonContainer.AbsoluteSize.Y + 10
+					end
+					if SingleRow.Visible then
+						SingleRow.Position = UDim2.new(0, 6, 0, yOffset)
+						yOffset = yOffset + SingleRow.AbsoluteSize.Y + 10
+					end
+					ParagraphFrame.Size = UDim2.new(1, 0, 0, yOffset)
+				end
+				
+				-- Add inside ParagraphFunction
+				function ParagraphFunction:UpdateImage(assetid)
+					if not assetid then
+						ImageLabel.Visible = false
+						recalcSize()
+						return
+					end
+					if typeof(assetid) == "number" then
+						ImageLabel.Image = "rbxassetid://" .. assetid
+					else
+						ImageLabel.Image = tostring(assetid)
+					end
+					ImageLabel.Visible = true
+					ImageLabel.Size = UDim2.new(1, -24, 0, 150)
+					ImageLabel.Position = UDim2.new(0, 12, 0, 30)
+					recalcSize()
+				end
+
+				function ParagraphFunction:ImageVisible(bool)
+					ImageLabel.Visible = bool
+					recalcSize()
+				end
+
+				AddConnection(ContentLabel:GetPropertyChangedSignal("Text"), recalcSize)
+				AddConnection(ImageLabel:GetPropertyChangedSignal("AbsoluteSize"), recalcSize)
+				AddConnection(ButtonContainer:GetPropertyChangedSignal("AbsoluteSize"), recalcSize)
+				AddConnection(SingleRow:GetPropertyChangedSignal("AbsoluteSize"), recalcSize)
+
+				-- Initialize
+				ContentLabel.Text = Content
+				if ImageAssetId then
+					ImageLabel.Visible = true
+					ImageLabel.Image = type(ImageAssetId) == "number" and ("rbxassetid://" .. tostring(ImageAssetId)) or ImageAssetId
+					ImageLabel.Size = UDim2.new(1, -24, 0, 150)
+				end
+				if Buttons then
+					ParagraphFunction:UpdateButtons(Buttons)
+				end
+				recalcSize()
+
 				return ParagraphFunction
-			end    
+			end
+			
 			function ElementFunction:AddButton(ButtonConfig)
 				ButtonConfig = ButtonConfig or {}
 				ButtonConfig.Name = ButtonConfig.Name or "Button"
@@ -1093,6 +1316,7 @@ function OrionLib:MakeWindow(WindowConfig)
 
 				return Button
 			end    
+
 			function ElementFunction:AddToggle(ToggleConfig)
 				ToggleConfig = ToggleConfig or {}
 				ToggleConfig.Name = ToggleConfig.Name or "Toggle"
@@ -1389,30 +1613,43 @@ function OrionLib:MakeWindow(WindowConfig)
 					Dropdown.Options = Options
 					AddOptions(Dropdown.Options)
 				end  
-
+				
 				function Dropdown:Set(Value)
 					if not table.find(Dropdown.Options, Value) then
-						Dropdown.Value = "..."
-						DropdownFrame.F.Selected.Text = Dropdown.Value
-						for _, v in pairs(Dropdown.Buttons) do
-							TweenService:Create(v,TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{BackgroundTransparency = 1}):Play()
-							TweenService:Create(v.Title,TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{TextTransparency = 0.4}):Play()
-						end	
-						return
-					end
-
-					Dropdown.Value = Value
+					Dropdown.Value = "..."
 					DropdownFrame.F.Selected.Text = Dropdown.Value
-
 					for _, v in pairs(Dropdown.Buttons) do
+						v.Title.TextColor3 = Color3.fromRGB(170, 170, 170)
+						v.Title.FontFace = Font.new(
+							"rbxasset://fonts/families/Montserrat.json",
+							Enum.FontWeight.Regular,
+							Enum.FontStyle.Normal
+						)
 						TweenService:Create(v,TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{BackgroundTransparency = 1}):Play()
 						TweenService:Create(v.Title,TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{TextTransparency = 0.4}):Play()
 					end	
-					TweenService:Create(Dropdown.Buttons[Value],TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{BackgroundTransparency = 0}):Play()
-					TweenService:Create(Dropdown.Buttons[Value].Title,TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{TextTransparency = 0}):Play()
-					return DropdownConfig.Callback(Dropdown.Value)
+					return
 				end
 
+				Dropdown.Value = Value
+				DropdownFrame.F.Selected.Text = Dropdown.Value
+
+				for _, v in pairs(Dropdown.Buttons) do
+					TweenService:Create(v,TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{BackgroundTransparency = 1}):Play()
+					TweenService:Create(v.Title,TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{TextTransparency = 0.4}):Play()
+				end	
+
+				Dropdown.Buttons[Value].Title.TextColor3 = Color3.new(1, 1, 1)
+				Dropdown.Buttons[Value].Title.FontFace = Font.new(
+					"rbxasset://fonts/families/Montserrat.json",
+					Enum.FontWeight.Bold,
+					Enum.FontStyle.Normal
+				)
+				TweenService:Create(Dropdown.Buttons[Value],TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{BackgroundTransparency = 0}):Play()
+				TweenService:Create(Dropdown.Buttons[Value].Title,TweenInfo.new(.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),{TextTransparency = 0}):Play()
+				return DropdownConfig.Callback(Dropdown.Value)
+				end
+				
 				AddConnection(Click.MouseButton1Click, function()
 					Dropdown.Toggled = not Dropdown.Toggled
 					DropdownFrame.F.Line.Visible = Dropdown.Toggled
@@ -1571,7 +1808,7 @@ function OrionLib:MakeWindow(WindowConfig)
 							-- Update the selected options text
 							local selectedText = table.concat(MultiDropdown.Value, ", ")
 							if selectedText == "" then
-								selectedText = table.concat(MultiDropdownConfig.Default or {}, ", ")
+								selectedText = "..."
 							elseif #selectedText > 21 then
 								selectedText = string.sub(selectedText, 1, 18) .. "..."
 							end
@@ -1607,6 +1844,53 @@ function OrionLib:MakeWindow(WindowConfig)
 				end)
 
 				MultiDropdown:Refresh(MultiDropdown.Options, false)
+				function MultiDropdown:Set(values)
+					-- Ensure values is a table
+					values = values or {}
+					if type(values) ~= "table" then values = {values} end
+
+					-- Update stored values
+					self.Value = {}
+
+					for _, val in ipairs(values) do
+						if table.find(self.Options, val) then
+							table.insert(self.Value, val)
+						end
+					end
+
+					-- Update button appearances
+					for option, btn in pairs(self.Buttons) do
+						if table.find(self.Value, option) then
+							btn.Title.TextColor3 = Color3.new(1, 1, 1)
+							btn.Title.FontFace = Font.new(
+								"rbxasset://fonts/families/Montserrat.json",
+								Enum.FontWeight.Bold,
+								Enum.FontStyle.Normal
+							)
+						else
+							btn.Title.TextColor3 = Color3.fromRGB(170, 170, 170)
+							btn.Title.FontFace = Font.new(
+								"rbxasset://fonts/families/Montserrat.json",
+								Enum.FontWeight.Regular,
+								Enum.FontStyle.Normal
+							)
+						end
+					end
+
+					-- Update the top selected label
+					local selectedText = table.concat(self.Value, ", ")
+					if selectedText == "" then
+						selectedText = table.concat(MultiDropdownConfig.Default or {}, ", ")
+					elseif #selectedText > 21 then
+						selectedText = string.sub(selectedText, 1, 18) .. "..."
+					end
+					MultiDropdownFrame.F.Selected.Text = selectedText
+
+					-- Call callback
+					if MultiDropdownConfig.Callback then
+						MultiDropdownConfig.Callback(self.Value)
+					end
+				end
 				if MultiDropdownConfig.Flag then                
 					OrionLib.Flags[MultiDropdownConfig.Flag] = MultiDropdown
 				end
@@ -2087,16 +2371,7 @@ function OrionLib:MakeWindow(WindowConfig)
 			})
 		end
 		return ElementFunction   
-	end  
-
-	OrionLib:MakeNotification({
-		Name = "UI Library Upgrade",
-		Content = "New UI Library Available at sirius.menu/discord and sirius.menu/rayfield",
-		Time = 5
-	})
-
-
-
+	end
 	return TabFunction
 end   
 
