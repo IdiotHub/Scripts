@@ -5,7 +5,8 @@ local games = {
     [18138547215] = "https://raw.githubusercontent.com/IdiotHub/Scripts/main/Random/AnimeCardBattle",
     [18901165922] = "https://raw.githubusercontent.com/IdiotHub/Scripts/main/Random/Pets%20Go",
     [85896571713843] = "https://raw.githubusercontent.com/IdiotHub/Scripts/refs/heads/main/BGSI/main.lua",
-    [126884695634066] = "https://raw.githubusercontent.com/IdiotHub/Scripts/refs/heads/main/GAG/GAG.lua"
+    [126884695634066] = "https://raw.githubusercontent.com/IdiotHub/Scripts/refs/heads/main/GAG/GAG.lua",
+    [127742093697776] = "https://raw.githubusercontent.com/IdiotHub/Scripts/refs/heads/main/PvB/main.lua"
 }
 
 local scriptURL = games[game.PlaceId]
