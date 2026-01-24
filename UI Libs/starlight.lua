@@ -2486,7 +2486,7 @@ function Starlight:CreateWindow(WindowSettings)
 			Style = number,
 			Title = string,
 			Subtitle = string,
-			Logo = number (asset id), **
+			Logo = assetid or number (asset id), **
 		},
 		
 		BuildWarnings = bool, **
@@ -2659,12 +2659,35 @@ function Starlight:CreateWindow(WindowSettings)
 		if (GUICanvasSize.Y - 50) <= mainWindow.AbsoluteSize.Y then
 			mainWindow.Size = UDim2.new(mainWindow.Size.X.Scale, mainWindow.Size.X.Offset, 0, GUICanvasSize.Y - 50)
 		end
+		
+		local function normalizeAssetId(icon)
+            if icon == nil then
+                return nil
+            end
+        
+            if type(icon) == "number" then
+                return "rbxassetid://" .. icon
+            end
+        
+            if type(icon) == "string" then
+                if icon:find("^rbxassetid://") then
+                    return icon
+                end
+        
+                if tonumber(icon) then
+                    return "rbxassetid://" .. icon
+                end
+            end
+        
+            return nil
+        end
 
-		mainWindow.Sidebar.Icon.Image = WindowSettings.Icon ~= nil and "rbxassetid://" .. WindowSettings.Icon or ""
 		mainWindow.Sidebar.Header.Text = WindowSettings.Name or ""
 		mainWindow.Content.Topbar.Headers.Subheader.Text = WindowSettings.Subtitle or ""
-		StarlightUI.MobileToggle.Image = WindowSettings.Icon ~= nil and "rbxassetid://" .. WindowSettings.Icon
-			or "rbxassetid://6031097229"
+		local icon = normalizeAssetId(WindowSettings.Icon)
+
+        mainWindow.Sidebar.Icon.Image = icon or ""
+        StarlightUI.MobileToggle.Image = icon or "rbxassetid://6031097229"
 
 		local size = mainWindow.Size
 		mainWindow.Size = WindowSettings.LoadingEnabled and UDim2.fromOffset(500, 325) or mainWindow.Size
