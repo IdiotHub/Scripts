@@ -1,3 +1,6 @@
+-- Addons/SaveManager.lua
+-- Updated: PetPicker parser added (saves/loads rarity table per pet).
+
 local httpService = game:GetService("HttpService")
 
 local SaveManager = {} do
@@ -89,6 +92,37 @@ local SaveManager = {} do
                     table.insert(entries, entry)
                 end
                 return { type = "PetPicker", idx = idx, entries = entries }
+            end,
+            Load = function(idx, data)
+                if not SaveManager.Options[idx] then return end
+                local rebuilt = {}
+                if type(data.entries) == "table" then
+                    for _, entry in ipairs(data.entries) do
+                        if type(entry.name) == "string" then
+                            local rarities = {}
+                            for k, v in next, entry do
+                                if k ~= "name" then
+                                    rarities[k] = v == true
+                                end
+                            end
+                            rebuilt[entry.name] = rarities
+                        end
+                    end
+                end
+                SaveManager.Options[idx]:SetValue(rebuilt)
+            end,
+        },
+        SmartSelect = {
+            Save = function(idx, object)
+                local entries = {}
+                for petName, rarities in next, object.Value do
+                    local entry = { name = petName }
+                    for rarity, active in next, rarities do
+                        entry[rarity] = active == true
+                    end
+                    table.insert(entries, entry)
+                end
+                return { type = "SmartSelect", idx = idx, entries = entries }
             end,
             Load = function(idx, data)
                 if not SaveManager.Options[idx] then return end
