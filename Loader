@@ -9,7 +9,7 @@ local games = {
     [126884695634066] = "https://raw.githubusercontent.com/IdiotHub/Scripts/refs/heads/main/GAG/GAG.lua",
     [127742093697776] = "https://raw.githubusercontent.com/IdiotHub/Scripts/refs/heads/main/PvB/main.lua",
     [75992362647444] = "https://raw.githubusercontent.com/IdiotHub/Scripts/refs/heads/main/Tap%20Simulator/main.lua",
-    [77085202503540] = "https://raw.githubusercontent.com/IdiotHub/Scripts/refs/heads/main/GAG2/UI_FREE.lua",
+    [97598239454123] = "https://raw.githubusercontent.com/IdiotHub/Scripts/refs/heads/main/GAG2/UI_FREE.lua",
 }
 
 local scriptURL = games[game.PlaceId]
