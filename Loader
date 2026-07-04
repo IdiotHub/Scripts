@@ -1,4 +1,6 @@
 
+
+
 local games = {
     [16510724413] = "https://raw.githubusercontent.com/IdiotHub/Scripts/main/Pet%20Catcher/Pet%20Catchers%20Main",
     [17601705136] = "https://raw.githubusercontent.com/IdiotHub/Scripts/main/Random/TycoonRng",
@@ -10,6 +12,7 @@ local games = {
     [127742093697776] = "https://raw.githubusercontent.com/IdiotHub/Scripts/refs/heads/main/PvB/main.lua",
     [75992362647444] = "https://raw.githubusercontent.com/IdiotHub/Scripts/refs/heads/main/Tap%20Simulator/main.lua",
     [97598239454123] = "https://raw.githubusercontent.com/IdiotHub/Scripts/refs/heads/main/GAG2/UI_FREE.lua",
+    [134381727982611] = "https://api.luarmor.net/files/v4/loaders/4bdf59d9926a81526b854c06558ab335.lua"
 }
 
 local scriptURL = games[game.PlaceId]
