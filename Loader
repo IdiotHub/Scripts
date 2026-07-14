@@ -1,7 +1,6 @@
 
 
-
-local games = {
+local gamesByPlaceId = {
     [16510724413] = "https://raw.githubusercontent.com/IdiotHub/Scripts/main/Pet%20Catcher/Pet%20Catchers%20Main",
     [17601705136] = "https://raw.githubusercontent.com/IdiotHub/Scripts/main/Random/TycoonRng",
     [17181264920] = "https://raw.githubusercontent.com/IdiotHub/Scripts/main/Random/CardRng",
@@ -15,9 +14,16 @@ local games = {
     [134381727982611] = "https://api.luarmor.net/files/v4/loaders/4bdf59d9926a81526b854c06558ab335.lua"
 }
 
-local scriptURL = games[game.PlaceId]
+local gamesByCreatorId = { 
+    [3959677] = "https://api.luarmor.net/files/v4/loaders/abce3508157653d24f68c9dccc7f2263.lua",
+}
+
+local scriptURL = gamesByPlaceId[game.PlaceId]
+local scriptURL2 = gamesByCreatorId[game.CreatorId]
 if scriptURL then
     loadstring(game:HttpGet(scriptURL))()
-else 
+elseif scriptURL2 then 
+    loadstring(game:HttpGet(scriptURL2))()
+else
     print("Game not supported by idiothub")
 end
